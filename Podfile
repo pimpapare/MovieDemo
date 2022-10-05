@@ -13,14 +13,14 @@ target 'MovieDemo' do
   pod 'SwiftyJSON'
 
   pod 'Firebase'
-
-  pod 'FirebaseCore'
-  pod 'FirebaseStorage', '~> 8.0.0'
+  pod 'Firebase/Core'
+  pod 'Firebase/Firestore'
+  pod 'FirebaseFirestoreSwift'
   pod 'FirebaseAuth'
   
   pod 'AlamofireObjectMapper'
   pod 'AlamofireNetworkActivityLogger'
-  pod 'Alamofire', '~> 5.0.0-rc.2'
+  pod 'Alamofire'
   
   pod 'IQKeyboardManagerSwift'
 

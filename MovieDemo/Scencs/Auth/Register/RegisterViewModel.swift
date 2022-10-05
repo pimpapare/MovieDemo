@@ -18,10 +18,30 @@ class RegisterViewModel: NSObject {
 
 extension RegisterViewModel {
     
-    func verifyPassword(with user: User) {
-     
-        if user.password != user.confirmPassword {
-            viewController?.presentErrorConfirmPassword()
+    func verifyForm(with user: User) {
+        
+        guard let email = user.email, email.count > 0, let password = user.password, password.count > 0 else {
+            viewController?.verifyFormFailed()
+            return
+        }
+        
+        guard password == user.confirmPassword else {
+            viewController?.verifyFormFailed()
+            return
+        }
+        
+        register(with: email, password: password)
+    }
+    
+    func register(with email: String, password: String) {
+        
+        AuthenManager.shared.userRegister(with: email, password: password) { result, errorMessage in
+            
+            if let value = result {
+                self.viewController.registerSuccess(user: value)
+            }else {
+                self.viewController.displayAlert(detail: errorMessage ?? "")
+            }
         }
     }
 }

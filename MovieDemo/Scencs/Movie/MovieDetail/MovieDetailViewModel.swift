@@ -8,5 +8,10 @@
 import UIKit
 
 class MovieDetailViewModel: NSObject {
-
+    
+    var viewController: MovieDetailViewController!
+    
+    required init(view: MovieDetailViewController) {
+        self.viewController = view
+    }
 }

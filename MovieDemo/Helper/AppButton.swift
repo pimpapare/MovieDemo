@@ -17,7 +17,7 @@ class AppButton: Button {
     func prepareView() {
         
         self.backgroundColor = .black
-        self.layer.cornerRadius = 5
+        self.layer.cornerRadius = 10
         self.setTitleColor(.white, for: .normal)
     }
 }

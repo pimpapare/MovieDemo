@@ -31,6 +31,8 @@ class MovieDetailCell: UITableViewCell {
         imgCell.layer.cornerRadius = 10
         imgCell.clipsToBounds = true
         
+        imgCell.contentMode = .scaleAspectFill
+        
         setTitle(with: nil)
         setDetail(with: nil)
         setScore(with: nil)
@@ -38,9 +40,9 @@ class MovieDetailCell: UITableViewCell {
 
     func prepareCell(with movie: MD_Movie?) {
         
-        setTitle(with: movie?.name ?? "")
-        setDetail(with: movie?.detail ?? "")
-        setImage(with: movie?.image ?? "")
+        setTitle(with: movie?.title ?? "")
+        setDetail(with: movie?.synopsis ?? "")
+        setImage(with: movie?.largeImage ?? "")
 
         if let score = movie?.score, score != 0 {
             setScore(with: String(format: "Score %.2f/10", score))
@@ -62,5 +64,4 @@ class MovieDetailCell: UITableViewCell {
     func setImage(with imagePath: String) {
         imgCell.sd_setImage(with: URL(string: imagePath), placeholderImage: UIImage(named: "logo"), options: .transformAnimatedImage, completed: nil)
     }
-    
 }

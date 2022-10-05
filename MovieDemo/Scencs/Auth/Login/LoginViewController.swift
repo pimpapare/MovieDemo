@@ -6,18 +6,20 @@
 //
 
 import UIKit
+import Material
 
 class LoginViewController: UIViewController {
-
+    
     @IBOutlet weak var tableView: UITableView!
-
+    @IBOutlet weak var btnRegister: AppButton!
+    
     lazy var viewModel: LoginViewModel = {
         return LoginViewModel(view: self)
     }()
     
     static let identifier = "LoginViewController"
     
-    var authen: [Authen] = [.email, .password, .login, .register]
+    var authen: [Authen] = [.email, .password, .login]
     var numberOfRow: Int = 0
     
     var user: User = User()
@@ -38,7 +40,14 @@ class LoginViewController: UIViewController {
     }
     
     func prepareView() {
-      
+        
+        btnRegister.setTitle("Register", for: .normal)
+        btnRegister.setTitleColor(.black, for: .normal)
+        btnRegister.backgroundColor = .clear
+        
+        btnRegister.layer.borderWidth = 1
+        btnRegister.layer.borderColor = UIColor.black.cgColor
+        
         prepareTableView()
     }
     
@@ -54,7 +63,7 @@ class LoginViewController: UIViewController {
         
         tableView.bounces = false
         tableView.allowsSelectionDuringEditing = true
-                
+        
         if #available(iOS 15.0, *) {
             tableView.sectionHeaderTopPadding = 0.0
         }
@@ -63,15 +72,15 @@ class LoginViewController: UIViewController {
     }
     
     func registerCells() {
-
+        
         tableView.register(TitleCell.self, forCellReuseIdentifier: TitleCell.identifier)
         tableView.register(UINib(nibName: TitleCell.identifier, bundle: nil),
                            forCellReuseIdentifier: TitleCell.identifier)
-
+        
         tableView.register(ImageCell.self, forCellReuseIdentifier: ImageCell.identifier)
         tableView.register(UINib(nibName: ImageCell.identifier, bundle: nil),
                            forCellReuseIdentifier: ImageCell.identifier)
-
+        
         tableView.register(InputWithErrorCell.self, forCellReuseIdentifier: InputWithErrorCell.identifier)
         tableView.register(UINib(nibName: InputWithErrorCell.identifier, bundle: nil),
                            forCellReuseIdentifier: InputWithErrorCell.identifier)
@@ -84,7 +93,7 @@ class LoginViewController: UIViewController {
     }
     
     func reloadData() {
-                
+        
         numberOfRow = authen.count + 2
         
         DispatchQueue.main.async {
@@ -98,11 +107,10 @@ class LoginViewController: UIViewController {
             self.tableView.reloadRows(at: [IndexPath(row: index, section: 0)], with: .automatic)
         }
     }
-}
-
-extension LoginViewController: UITableViewDelegate {
     
-    
+    @IBAction func btnRegisterDidTapped(_ sender: Any) {
+        presentRegisterView()
+    }
 }
 
 extension LoginViewController: UITableViewDataSource {
@@ -151,7 +159,7 @@ extension LoginViewController: UITableViewDataSource {
         let identifier: String = InputWithErrorCell.identifier
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? InputWithErrorCell
         cell?.delegate = self
-        cell?.prepareCell(with: type)
+        cell?.prepareCell(with: type, user: user)
         
         if isNeedVerify {
             cell?.verifyCell(with: type, user: user)
@@ -188,9 +196,8 @@ extension LoginViewController: InputWithErrorDelegate {
 extension LoginViewController: ButtonDelegate {
     
     func userDidTappedButton(with type: Authen) {
-
+        
         guard type == .login else {
-            presentRegisterView()
             return
         }
         
@@ -201,6 +208,7 @@ extension LoginViewController: ButtonDelegate {
         
         let identifier = RegisterViewController.identifier
         let viewController = UIStoryboard(name: "Authen", bundle: nil).instantiateViewController(withIdentifier: identifier) as? RegisterViewController
+        viewController?.delegate = self
         viewController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(viewController!, animated: true)
     }
@@ -211,12 +219,36 @@ extension LoginViewController: ButtonDelegate {
         reloadData()
     }
     
+    func loginSuccess() {
+        presentHomeView()
+    }
+    
     func presentHomeView() {
         closeView()
     }
     
+    func displayAlert(title: String?=nil, detail: String?=nil) {
+        
+        let alertController = UIAlertController(title: title, message: detail, preferredStyle: .alert)
+        
+        let okeyAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okeyAction)
+        
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
     func closeView() {
-      
+        
         self.dismiss(animated: true)
+    }
+}
+
+extension LoginViewController: RegisterViewDelegate {
+    
+    func registerSuccess(with user: MD_User) {
+        
+        closeView()
     }
 }

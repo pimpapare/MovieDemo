@@ -7,6 +7,11 @@
 
 import UIKit
 
+protocol RegisterViewDelegate {
+
+    func registerSuccess(with user: MD_User)
+}
+
 class RegisterViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
@@ -18,11 +23,14 @@ class RegisterViewController: UIViewController {
     
     static let identifier = "RegisterViewController"
     
+    var delegate: RegisterViewDelegate?
+    
     var authen: [Authen] = [.email, .password, .confirmPassword, .register]
     var numberOfRow: Int = 0
     
     var user: User = User()
-    
+    var isNeedVerify: Bool = false
+
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
@@ -146,7 +154,12 @@ extension RegisterViewController: UITableViewDataSource {
         let identifier: String = InputWithErrorCell.identifier
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? InputWithErrorCell
         cell?.delegate = self
-        cell?.prepareCell(with: type)
+        cell?.prepareCell(with: type, user: user)
+        
+        if isNeedVerify {
+            cell?.verifyCell(with: type, user: user)
+        }
+        
         return cell!
     }
     
@@ -158,7 +171,6 @@ extension RegisterViewController: UITableViewDataSource {
         
         cell?.prepareCell(with: type)
         cell?.setNormalStyle()
-        cell?.verifyEnableRegisterButton(with: user)
 
         return cell!
     }
@@ -177,8 +189,6 @@ extension RegisterViewController: InputWithErrorDelegate {
             user.confirmPassword = text
         default: break
         }
-        
-        reloadData(at: numberOfRow - 1)
     }
 }
 
@@ -186,11 +196,31 @@ extension RegisterViewController: ButtonDelegate {
     
     func userDidTappedButton(with type: Authen) {
        
-        viewModel.verifyPassword(with: user)
+        viewModel.verifyForm(with: user)
     }
     
-    func presentErrorConfirmPassword() {
+    func verifyFormFailed() {
         
+        isNeedVerify = true
         reloadData()
+    }
+    
+    func displayAlert(title: String?=nil, detail: String?=nil) {
+        
+        let alertController = UIAlertController(title: title, message: detail, preferredStyle: .alert)
+
+        let okeyAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okeyAction)
+        
+        DispatchQueue.main.async {
+            self.present(alertController, animated: true, completion: nil)
+        }
+    }
+    
+    func registerSuccess(user: MD_User) {
+        
+        self.dismiss(animated: true) {
+            self.delegate?.registerSuccess(with: user)
+        }
     }
 }

@@ -11,9 +11,21 @@ class LaunchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+    }
+        
+    override func viewDidAppear(_ animated: Bool) {
+        
+        verifyAuthen()
+    }
+    
+    func verifyAuthen() {
+        
         presentHome()
-//        presentLogin()
+        
+        let user = AuthenManager.shared.fetchUser()
+        guard user == nil else { return }
+
+        presentLogin()
     }
 
     func presentLogin() {
@@ -21,7 +33,7 @@ class LaunchViewController: UIViewController {
         let identifier = LoginViewController.identifier
         let viewController = UIStoryboard(name: "Authen", bundle: nil).instantiateViewController(withIdentifier: identifier) as? LoginViewController
         viewController?.modalPresentationStyle = .fullScreen
-        
+
         let nav = UINavigationController(rootViewController: viewController!)
         nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: true)
@@ -33,11 +45,6 @@ class LaunchViewController: UIViewController {
         let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieListViewController
         viewController?.modalPresentationStyle = .fullScreen
         
-        let nav = UINavigationController(rootViewController: viewController!)
-        nav.modalPresentationStyle = .fullScreen
-        self.present(nav, animated: false)
-
-//        navigationController?.pushViewController(viewController!, animated: false)
+        navigationController?.pushViewController(viewController!, animated: false)
     }
-
 }

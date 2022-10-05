@@ -8,20 +8,22 @@
 import UIKit
 
 class MovieManager: NSObject {
-
+    
     static let shared = MovieManager()
-
+    
 }
 
 extension MovieManager {
     
     func fetchAnime(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [MD_Movie]?)-> Void) {
         
-        MovieRemoteDatasource.shared.fetchAnime(with: name) { success, errorMessage, result in
+        MovieRemote.shared.fetchAnime(with: name) { success, errorMessage, result in
             
             if let value = result {
-             
-                let savedMovies = MovieLocalDataSoure.shared.saveMovie(from: value)
+                
+                MovieLocal.shared.removeMovies()
+                
+                let savedMovies = MovieLocal.shared.saveMovies(from: value)
                 completion(success, errorMessage, savedMovies)
                 
             }else {
@@ -29,5 +31,10 @@ extension MovieManager {
                 completion(success, errorMessage, nil)
             }
         }
+    }
+
+    func updateMovieStatus(with movie: MD_Movie, isFavorite: Bool, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [MD_Movie]?)-> Void) {
+        
+        
     }
 }

@@ -10,16 +10,23 @@ import SwiftyJSON
 
 public class Movie: NSObject {
     
+    var malId: Int16?
+
     var title: String?
-    var detail: String?
+    var synopsis: String?
 
     var image: String?
+    var smallImage: String?
+    var largeImage: String?
+
     var score: Double?
     
     var url: String?
     var isFav: Bool = false
 
     init(json: JSON) {
+        
+        malId = json["mal_id"].int16Value
         
         let titles = json["titles"].arrayValue
         
@@ -32,10 +39,13 @@ public class Movie: NSObject {
         let images = json["images"].dictionaryValue
         
         if let imageWebp = images["jpg"]?.dictionaryValue {
+            
             image = imageWebp["image_url"]?.stringValue
+            smallImage = imageWebp["small_image_url"]?.stringValue
+            largeImage = imageWebp["large_image_url"]?.stringValue
         }
         
-        detail = json["synopsis"].stringValue
+        synopsis = json["synopsis"].stringValue
         score = json["score"].doubleValue
         url = json["url"].stringValue
     }

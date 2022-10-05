@@ -43,10 +43,8 @@ class ButtonCell: UITableViewCell {
         
         switch type {
         case .login:
-            btnCell.pulseColor = .white
             setNormalStyle()
         case .register:
-            btnCell.pulseColor = .clear
             setBorderStyle()
         default: break
         }
@@ -83,9 +81,6 @@ class ButtonCell: UITableViewCell {
 
         btnCell.layer.borderWidth = 1
         btnCell.layer.borderColor = UIColor.black.cgColor
-        
-//        leftBtnCell.isActive = false
-//        rightBtnCell.isActive = false
     }
     
     func setNormalStyle() {

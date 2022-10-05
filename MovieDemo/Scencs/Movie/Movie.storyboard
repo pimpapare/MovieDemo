@@ -193,7 +193,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="btnAddToFav" destination="I7V-zg-bQG" id="asd-HL-Wxg"/>
+                        <outlet property="btnFav" destination="I7V-zg-bQG" id="tQP-yR-Vww"/>
                         <outlet property="btnOpenWebsite" destination="TPf-XQ-xPG" id="L7l-aC-cE5"/>
                         <outlet property="tableView" destination="I0l-MB-t4W" id="lVm-bw-frS"/>
                         <outlet property="vFooter" destination="JYu-5s-KSo" id="e7f-da-bSA"/>
@@ -203,6 +203,40 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EIz-4A-Ew5" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1647.6923076923076" y="3.5545023696682461"/>
+        </scene>
+        <!--Movie Favorite View Controller-->
+        <scene sceneID="AD1-WS-R58">
+            <objects>
+                <viewController storyboardIdentifier="MovieFavoriteViewController" id="HEa-ym-DCT" customClass="MovieFavoriteViewController" customModule="MovieDemo" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="2wl-Yr-9OY">
+                        <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Z2b-sH-PBN">
+                                <rect key="frame" x="0.0" y="44" width="390" height="766"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <connections>
+                                    <outlet property="dataSource" destination="HEa-ym-DCT" id="sVz-bP-lup"/>
+                                    <outlet property="delegate" destination="HEa-ym-DCT" id="lQL-UN-dOi"/>
+                                </connections>
+                            </tableView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="kir-iU-uSj"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="Z2b-sH-PBN" firstAttribute="leading" secondItem="kir-iU-uSj" secondAttribute="leading" id="X4g-C6-P9Q"/>
+                            <constraint firstItem="kir-iU-uSj" firstAttribute="trailing" secondItem="Z2b-sH-PBN" secondAttribute="trailing" id="bPE-CO-w9P"/>
+                            <constraint firstItem="Z2b-sH-PBN" firstAttribute="top" secondItem="kir-iU-uSj" secondAttribute="top" id="bWa-2e-5IL"/>
+                            <constraint firstItem="kir-iU-uSj" firstAttribute="bottom" secondItem="Z2b-sH-PBN" secondAttribute="bottom" id="u4K-Dx-GEG"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="tableView" destination="Z2b-sH-PBN" id="Dc5-K9-hoT"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zSl-p9-Cq2" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2354" y="4"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="fhr-id-sLx">

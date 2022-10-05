@@ -38,12 +38,27 @@ class InputWithErrorCell: UITableViewCell {
         txError.text = nil
     }
     
-    func prepareCell(with type: Authen) {
+    func prepareCell(with type: Authen, user: User?) {
         
         currentType = type
-
+        
+        switch currentType {
+        case .email:
+            setText(with: user?.email)
+        case .password:
+            setText(with: user?.password)
+        case .confirmPassword:
+            setText(with: user?.confirmPassword)
+        default: break
+        }
+        
         tfCell.placeholder = type.rawValue
         tfCell.isSecureTextEntry = (type == .password || type == .confirmPassword)
+    }
+    
+    func setText(with text: String?) {
+        
+        tfCell.text = text
     }
     
     func setError(with type: Authen) {
@@ -86,7 +101,7 @@ class InputWithErrorCell: UITableViewCell {
 
         case .confirmPassword:
             
-            if (user.confirmPassword?.count ?? 0) < 0 || user.confirmPassword != user.password {
+            if (user.confirmPassword?.count ?? 0) <= 0 || user.confirmPassword != user.password {
                 setError(with: .confirmPassword)
             }
             

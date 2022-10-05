@@ -18,7 +18,7 @@ class MovieListViewModel: NSObject {
     func filterMovie(with searchText: String, movies: [MD_Movie]?) {
         
         let filterMovie = movies?.filter { movie in
-            return (movie.name ?? "").contains(searchText)
+            return (movie.title ?? "").contains(searchText)
         }
         
         if filterMovie?.count == 0, searchText.count == 0 {
@@ -31,11 +31,24 @@ class MovieListViewModel: NSObject {
 
 extension MovieListViewModel {
     
+    func fetchLocalAnimeList() {
+    
+        let movieList = MovieLocal.shared.fetchMovies()
+        self.viewController.fetchAnimeSuccess(with: movieList)
+    }
+    
     func fetchAnimeList(with name: String) {
         
         MovieManager.shared.fetchAnime(with: name) { success, errorMessage, result in
             
             self.viewController.fetchAnimeSuccess(with: result)
         }
+    }
+    
+    func userLogout() {
+        
+        AuthenManager.shared.userSignout()
+        
+        viewController.presentLogin()
     }
 }

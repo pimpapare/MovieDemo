@@ -17,11 +17,7 @@
 #ifndef FIRESTORE_CORE_SRC_API_API_FWD_H_
 #define FIRESTORE_CORE_SRC_API_API_FWD_H_
 
-#include <functional>
 #include <memory>
-
-#include "Firestore/core/src/util/statusor.h"
-#include "absl/types/optional.h"
 
 namespace firebase {
 namespace firestore {
@@ -29,7 +25,6 @@ namespace firestore {
 namespace core {
 template <typename T>
 class EventListener;
-class Query;
 }  // namespace core
 
 namespace api {
@@ -53,9 +48,6 @@ using DocumentSnapshotListener =
 
 using QuerySnapshotListener =
     std::unique_ptr<core::EventListener<QuerySnapshot>>;
-
-using QueryCallback = std::function<void(core::Query, bool)>;
-using CountQueryCallback = std::function<void(const util::StatusOr<int64_t>&)>;
 
 }  // namespace api
 }  // namespace firestore

@@ -16,12 +16,17 @@ class MovieDetailViewController: UIViewController {
 
     @IBOutlet weak var vFooter: UIView!
     @IBOutlet weak var btnOpenWebsite: Button!
-    @IBOutlet weak var btnAddToFav: Button!
+    @IBOutlet weak var btnFav: Button!
+        
+    lazy var viewModel: MovieDetailViewModel = {
+        return MovieDetailViewModel(view: self)
+    }()
         
     static let identifier = "MovieDetailViewController"
     
     var movie: MD_Movie?
-
+    var isFromFavorite: Bool = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareAppearance()
@@ -43,13 +48,15 @@ class MovieDetailViewController: UIViewController {
         btnOpenWebsite.layer.borderColor = UIColor.green.cgColor
         btnOpenWebsite.layer.cornerRadius = 5
         
-        btnAddToFav.setTitle("Add Favorite", for: .normal)
-        btnAddToFav.setTitleColor(.orange, for: .normal)
-        btnAddToFav.layer.borderWidth = 1
-        btnAddToFav.layer.borderColor = UIColor.orange.cgColor
-        btnAddToFav.layer.cornerRadius = 5
-        btnAddToFav.setImage(UIImage(named: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        btnAddToFav.tintColor = .orange
+        let color: UIColor = isFromFavorite ? .black : .orange
+        
+        btnFav.setTitle(isFromFavorite ? "Unfavorite" : "Add Favorite", for: .normal)
+        btnFav.setTitleColor(color, for: .normal)
+        btnFav.layer.borderWidth = 1
+        btnFav.layer.borderColor = color.cgColor
+        btnFav.layer.cornerRadius = 5
+        btnFav.setImage(UIImage(named: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnFav.tintColor = color
         
         prepareTableView()
     }

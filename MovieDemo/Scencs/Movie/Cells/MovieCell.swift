@@ -46,8 +46,8 @@ class MovieCell: UITableViewCell {
     
     func prepareCell(with movie: MD_Movie?) {
         
-        setTitle(with: movie?.name ?? "")
-        setDetail(with: movie?.detail ?? "")
+        setTitle(with: movie?.title ?? "")
+        setDetail(with: movie?.synopsis ?? "")
         setImage(with: movie?.image ?? "")
 
         if let score = movie?.score, score != 0 {

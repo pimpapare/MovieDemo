@@ -57,6 +57,8 @@ class MovieListViewController: UIViewController {
     func prepareAppreance() {
         
         prepareView()
+        
+        viewModel.fetchLocalAnimeList()
         fetchAnime(with: "naruto")
     }
     
@@ -64,7 +66,8 @@ class MovieListViewController: UIViewController {
         
         title = "Movies"
         navigationItem.rightBarButtonItem = searchButton
-        
+        navigationItem.setHidesBackButton(true, animated: true)
+
         widthVLeft.constant = Constants.Padding.Field
         
         vFooter.layer.borderWidth = 1
@@ -165,10 +168,28 @@ class MovieListViewController: UIViewController {
     }
     
     func presentMovieFavoriteView() {
-        
+       
+        let identifier = MovieFavoriteViewController.identifier
+        let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieFavoriteViewController
+        viewController?.modalPresentationStyle = .fullScreen
+        self.navigationController?.pushViewController(viewController!, animated: true)
     }
     
+    
     @IBAction func btnLogoutDidTapped(_ sender: Any) {
+        
+        viewModel.userLogout()
+    }
+
+    func presentLogin() {
+     
+        let identifier = LoginViewController.identifier
+        let viewController = UIStoryboard(name: "Authen", bundle: nil).instantiateViewController(withIdentifier: identifier) as? LoginViewController
+        viewController?.modalPresentationStyle = .fullScreen
+
+        let nav = UINavigationController(rootViewController: viewController!)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true)
     }
 }
 
