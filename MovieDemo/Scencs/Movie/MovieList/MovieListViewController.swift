@@ -12,7 +12,7 @@ class MovieListViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var widthVLeft: NSLayoutConstraint!
-
+    
     @IBOutlet weak var vFooter: UIView!
     
     @IBOutlet weak var btnFavMovie: Button!
@@ -22,9 +22,28 @@ class MovieListViewController: UIViewController {
         return MovieListViewModel(view: self)
     }()
     
+    lazy var searchButton: UIBarButtonItem = {
+        
+        let button = UIButton(type: .system)
+        button.setImage(UIImage(named: "ic_import_contacts"), for: .normal)
+        button.addTarget(self, action: #selector(searchButtonDidTapped), for: .touchUpInside)
+        
+        let menuBarItem = UIBarButtonItem(customView: button)
+        menuBarItem.customView?.translatesAutoresizingMaskIntoConstraints = false
+        menuBarItem.customView?.heightAnchor.constraint(equalToConstant: 24).isActive = true
+        menuBarItem.customView?.widthAnchor.constraint(equalToConstant: 24).isActive = true
+        
+        return menuBarItem
+    }()
+    
+    var searchController: UISearchController?
+    
     static let identifier = "MovieListViewController"
     
-    var currentName: String = "naruto"
+    var currentName: String = ""
+    
+    var movieList: [MD_Movie]?
+    var filterMovieList: [MD_Movie]?
     
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
@@ -38,12 +57,14 @@ class MovieListViewController: UIViewController {
     func prepareAppreance() {
         
         prepareView()
-        fetchAnime()
+        fetchAnime(with: "naruto")
     }
     
     func prepareView() {
         
-        title = "Movie"
+        title = "Movies"
+        navigationItem.rightBarButtonItem = searchButton
+        
         widthVLeft.constant = Constants.Padding.Field
         
         vFooter.layer.borderWidth = 1
@@ -54,7 +75,8 @@ class MovieListViewController: UIViewController {
         btnFavMovie.layer.borderWidth = 1
         btnFavMovie.layer.borderColor = UIColor.orange.cgColor
         btnFavMovie.layer.cornerRadius = 5
-        btnFavMovie.setImage(UIImage(named: "star"), for: .normal)
+        btnFavMovie.setImage(UIImage(named: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnFavMovie.tintColor = .orange
         
         btnLogout.setTitle("Logout", for: .normal)
         btnLogout.backgroundColor = .red
@@ -62,14 +84,12 @@ class MovieListViewController: UIViewController {
         btnLogout.setTitleColor(.white, for: .normal)
         
         prepareTableView()
+        prepareSearchBar()
     }
     
     func prepareTableView() {
         
         tableView.dataSource = self
-        
-        tableView.separatorStyle = .none
-        tableView.separatorColor = .clear
         
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 90
@@ -84,11 +104,26 @@ class MovieListViewController: UIViewController {
         registerCells()
     }
     
+    func prepareSearchBar() {
+        
+        searchController = UISearchController(searchResultsController: nil)
+        searchController?.dimsBackgroundDuringPresentation = false
+        searchController?.searchBar.placeholder = "Search"
+        searchController?.searchBar.delegate = self
+        searchController?.searchBar.sizeToFit()
+        
+        navigationItem.searchController = searchController
+    }
+    
     func registerCells() {
         
         tableView.register(MovieCell.self, forCellReuseIdentifier: MovieCell.identifier)
         tableView.register(UINib(nibName: MovieCell.identifier, bundle: nil),
                            forCellReuseIdentifier: MovieCell.identifier)
+        
+        tableView.register(NoDataCell.self, forCellReuseIdentifier: NoDataCell.identifier)
+        tableView.register(UINib(nibName: NoDataCell.identifier, bundle: nil),
+                           forCellReuseIdentifier: NoDataCell.identifier)
         
         reloadData()
     }
@@ -100,7 +135,36 @@ class MovieListViewController: UIViewController {
         }
     }
     
+    @objc func searchButtonDidTapped() {
+        
+        presentSearchPopup()
+    }
+    
+    func presentSearchPopup() {
+        
+        let alert = UIAlertController(title: "Movies name", message: "Please enter movie name", preferredStyle: .alert)
+        alert.addTextField()
+        alert.textFields![0].placeholder = "Movie name"
+        
+        let submitAction = UIAlertAction(title: "Ok", style: .default) { [unowned alert] _ in
+            
+            let textfield = alert.textFields![0]
+            self.fetchAnime(with: textfield.text ?? "")
+        }
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [unowned alert] _ in }
+        
+        alert.addAction(submitAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true)
+    }
+    
     @IBAction func btnFavMovieDidTapped(_ sender: Any) {
+        presentMovieFavoriteView()
+    }
+    
+    func presentMovieFavoriteView() {
         
     }
     
@@ -110,26 +174,59 @@ class MovieListViewController: UIViewController {
 
 extension MovieListViewController {
     
-    func fetchAnime() {
+    func fetchAnime(with text: String) {
         
-        viewModel.fetchAnimeList(with: currentName)
+        currentName = text
+        viewModel.fetchAnimeList(with: text)
     }
     
-    func fetchAnimeSuccess() {
+    func fetchAnimeSuccess(with movies: [MD_Movie]?) {
         
+        movieList = movies
+        filterMovieList = movieList
+        
+        reloadData()
+    }
+}
+
+extension MovieListViewController: UISearchBarDelegate {
+    
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
+        filterMovie(with: searchText)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        
+        filterMovieList = movieList
+        reloadData()
+    }
+    
+    func filterMovie(with text: String) {
+        
+        viewModel.filterMovie(with: text, movies: movieList)
+    }
+    
+    func filterMovieSuccess(filterList: [MD_Movie]?) {
+        
+        filterMovieList = filterList
+        reloadData()
     }
 }
 
 extension MovieListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        presentMovieDetail()
+        
+        let movie = filterMovieList?[indexPath.row]
+        presentMovieDetail(with: movie)
     }
     
-    func presentMovieDetail() {
-     
+    func presentMovieDetail(with movie: MD_Movie?) {
+        
         let identifier = MovieDetailViewController.identifier
         let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieDetailViewController
+        viewController?.movie = movie
         viewController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(viewController!, animated: true)
     }
@@ -137,19 +234,41 @@ extension MovieListViewController: UITableViewDelegate {
 
 extension MovieListViewController: UITableViewDataSource {
     
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if (filterMovieList?.count ?? 0) == 0 {
+            return tableView.frame.size.height
+        }
+        
+        return UITableView.automaticDimension
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return filterMovieList?.count ?? 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        return prepareMovieCell()
+        guard indexPath.row < (filterMovieList?.count ?? 0) else {
+            return prepareNoDataCell()
+        }
+        
+        let movie = filterMovieList?[indexPath.row]
+        return prepareMovieCell(with: movie)
     }
     
-    func prepareMovieCell() -> UITableViewCell {
+    func prepareMovieCell(with movie: MD_Movie?) -> UITableViewCell {
         
         let identifier: String = MovieCell.identifier
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? MovieCell
+        cell?.prepareCell(with: movie)
+        return cell!
+    }
+    
+    func prepareNoDataCell() -> UITableViewCell {
+        
+        let identifier: String = NoDataCell.identifier
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? NoDataCell
         return cell!
     }
 }

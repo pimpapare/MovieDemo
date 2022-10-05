@@ -11,7 +11,7 @@ import SwiftyJSON
 
 public class MovieService {
     
-    public static func getAnime(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [MovieReponse]?)-> Void) {
+    public static func getAnime(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [Movie]?)-> Void) {
         
         let request = MovieRouter.getAnime(name: name)
         
@@ -20,11 +20,8 @@ public class MovieService {
             if let value = response {
                                 
                 let data = JSON(value)
-//                let success = data["success"].boolValue
-//                let error = data["error"].stringValue
-                
                 let result = MovieReponse(json: data)
-//                completion(success, error, result)
+                completion(true, response?.error?.debugDescription, result.movies)
                 
             }else {
                 

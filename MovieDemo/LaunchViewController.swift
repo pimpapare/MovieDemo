@@ -32,7 +32,12 @@ class LaunchViewController: UIViewController {
         let identifier = MovieListViewController.identifier
         let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieListViewController
         viewController?.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(viewController!, animated: false)
+        
+        let nav = UINavigationController(rootViewController: viewController!)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: false)
+
+//        navigationController?.pushViewController(viewController!, animated: false)
     }
 
 }

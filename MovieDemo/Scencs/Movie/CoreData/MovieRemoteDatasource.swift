@@ -8,19 +8,17 @@
 import UIKit
 
 class MovieRemoteDatasource: NSObject {
-
+    
     static let shared = MovieRemoteDatasource()
 }
 
 extension MovieRemoteDatasource {
     
-    func fetchAnime(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [MovieReponse]?)-> Void) {
+    func fetchAnime(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [Movie]?)-> Void) {
         
         MovieService.getAnime(with: name) { success, errorMessage, result in
             
-            if let value = result {
-                
-            }
+            completion(success, errorMessage, result)
         }
     }
 }

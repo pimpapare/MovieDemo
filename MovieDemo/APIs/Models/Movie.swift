@@ -11,9 +11,14 @@ import SwiftyJSON
 public class Movie: NSObject {
     
     var title: String?
+    var detail: String?
+
     var image: String?
     var score: Double?
     
+    var url: String?
+    var isFav: Bool = false
+
     init(json: JSON) {
         
         let titles = json["titles"].arrayValue
@@ -22,14 +27,16 @@ public class Movie: NSObject {
             return titleType["type"].stringValue.lowercased() == "english"
         }).first
         
-        title = titleEn?.stringValue
+        title = titleEn?["title"].stringValue
         
         let images = json["images"].dictionaryValue
         
-        if let imageWebp = images["webp"]?.dictionaryValue {
+        if let imageWebp = images["jpg"]?.dictionaryValue {
             image = imageWebp["image_url"]?.stringValue
         }
         
+        detail = json["synopsis"].stringValue
         score = json["score"].doubleValue
+        url = json["url"].stringValue
     }
 }

@@ -7,6 +7,7 @@
 
 import UIKit
 import Material
+import SafariServices
 
 class MovieDetailViewController: UIViewController {
     
@@ -16,9 +17,11 @@ class MovieDetailViewController: UIViewController {
     @IBOutlet weak var vFooter: UIView!
     @IBOutlet weak var btnOpenWebsite: Button!
     @IBOutlet weak var btnAddToFav: Button!
-    
+        
     static let identifier = "MovieDetailViewController"
     
+    var movie: MD_Movie?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareAppearance()
@@ -31,11 +34,8 @@ class MovieDetailViewController: UIViewController {
     
     func prepareView() {
         
-        title = "Movie Detail"
+        title = "Detail"
         widthVLeft.constant = Constants.Padding.Field
-
-        vFooter.layer.borderWidth = 1
-        vFooter.layer.borderColor = UIColor.gray.cgColor
         
         btnOpenWebsite.setTitle("Open Website", for: .normal)
         btnOpenWebsite.setTitleColor(.green, for: .normal)
@@ -43,12 +43,13 @@ class MovieDetailViewController: UIViewController {
         btnOpenWebsite.layer.borderColor = UIColor.green.cgColor
         btnOpenWebsite.layer.cornerRadius = 5
         
-        btnAddToFav.setTitle("Open Website", for: .normal)
+        btnAddToFav.setTitle("Add Favorite", for: .normal)
         btnAddToFav.setTitleColor(.orange, for: .normal)
         btnAddToFav.layer.borderWidth = 1
         btnAddToFav.layer.borderColor = UIColor.orange.cgColor
         btnAddToFav.layer.cornerRadius = 5
-        btnAddToFav.setImage(UIImage(named: "star"), for: .normal)
+        btnAddToFav.setImage(UIImage(named: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        btnAddToFav.tintColor = .orange
         
         prepareTableView()
     }
@@ -97,9 +98,30 @@ class MovieDetailViewController: UIViewController {
     }
     
     @IBAction func btnOpenWebsiteDidTapped(_ sender: Any) {
+        
+        if let urlPath = movie?.url {
+            presentSafari(with: urlPath)
+        }
+    }
+        
+    func presentSafari(with urlPath: String) {
+        
+        if let url = URL(string: urlPath) {
+            
+            let vc = SFSafariViewController(url: url, entersReaderIfAvailable: true)
+            vc.delegate = self
+
+            present(vc, animated: true)
+        }
     }
     
     @IBAction func btnAddToFavDidTapped(_ sender: Any) {
+    }
+}
+
+extension MovieDetailViewController: SFSafariViewControllerDelegate {
+    
+    func safariViewControllerDidFinish(_ controller: SFSafariViewController) {
     }
 }
 
@@ -122,6 +144,7 @@ extension MovieDetailViewController: UITableViewDataSource {
         
         let identifier: String = MovieDetailCell.identifier
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? MovieDetailCell
+        cell?.prepareCell(with: movie)
         return cell!
     }
 }

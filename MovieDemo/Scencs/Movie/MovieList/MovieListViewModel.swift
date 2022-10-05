@@ -14,6 +14,19 @@ class MovieListViewModel: NSObject {
     required init(view: MovieListViewController) {
         self.viewController = view
     }
+    
+    func filterMovie(with searchText: String, movies: [MD_Movie]?) {
+        
+        let filterMovie = movies?.filter { movie in
+            return (movie.name ?? "").contains(searchText)
+        }
+        
+        if filterMovie?.count == 0, searchText.count == 0 {
+            viewController.filterMovieSuccess(filterList: movies)
+        }else {
+            viewController.filterMovieSuccess(filterList: filterMovie)
+        }
+    }
 }
 
 extension MovieListViewModel {
@@ -22,7 +35,7 @@ extension MovieListViewModel {
         
         MovieManager.shared.fetchAnime(with: name) { success, errorMessage, result in
             
-            
+            self.viewController.fetchAnimeSuccess(with: result)
         }
     }
 }
