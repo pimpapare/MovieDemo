@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <tableViewCell contentMode="scaleToFill" selectionStyle="none" indentationWidth="10" rowHeight="263" id="KGk-i7-Jjw" customClass="ImageCell" customModule="MovieDemo" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
+                <rect key="frame" x="0.0" y="0.0" width="320" height="180"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fvP-R9-X7R" customClass="ViewPadding" customModule="MovieDemo" customModuleProvider="target">
+                        <rect key="frame" x="0.0" y="0.0" width="20" height="180"/>
+                        <color key="backgroundColor" systemColor="systemPinkColor"/>
+                        <constraints>
+                            <constraint firstAttribute="width" constant="20" id="bdS-Jy-S83"/>
+                        </constraints>
+                    </view>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Gzs-4F-wuT" customClass="ViewPadding" customModule="MovieDemo" customModuleProvider="target">
+                        <rect key="frame" x="300" y="0.0" width="20" height="180"/>
+                        <color key="backgroundColor" systemColor="systemPinkColor"/>
+                    </view>
+                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="dSn-kn-MYX">
+                        <rect key="frame" x="80" y="0.0" width="160" height="160"/>
+                        <constraints>
+                            <constraint firstAttribute="width" secondItem="dSn-kn-MYX" secondAttribute="height" multiplier="1:1" id="U8e-bq-Wwu"/>
+                        </constraints>
+                    </imageView>
+                </subviews>
+                <constraints>
+                    <constraint firstAttribute="bottom" secondItem="Gzs-4F-wuT" secondAttribute="bottom" id="0yS-cQ-GvV"/>
+                    <constraint firstAttribute="bottom" secondItem="fvP-R9-X7R" secondAttribute="bottom" id="1XL-vX-JDl"/>
+                    <constraint firstAttribute="bottom" secondItem="dSn-kn-MYX" secondAttribute="bottom" constant="20" symbolic="YES" id="4RQ-sp-a6d"/>
+                    <constraint firstItem="fvP-R9-X7R" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="92P-fR-TJr"/>
+                    <constraint firstItem="dSn-kn-MYX" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="DvM-8r-W2A"/>
+                    <constraint firstItem="Gzs-4F-wuT" firstAttribute="leading" secondItem="dSn-kn-MYX" secondAttribute="trailing" constant="60" id="P2e-cF-sCE"/>
+                    <constraint firstItem="Gzs-4F-wuT" firstAttribute="width" secondItem="fvP-R9-X7R" secondAttribute="width" id="T4N-zC-ucZ"/>
+                    <constraint firstItem="dSn-kn-MYX" firstAttribute="leading" secondItem="fvP-R9-X7R" secondAttribute="trailing" constant="60" id="Tql-qJ-s0c"/>
+                    <constraint firstAttribute="trailing" secondItem="Gzs-4F-wuT" secondAttribute="trailing" id="sew-78-jfd"/>
+                    <constraint firstItem="Gzs-4F-wuT" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="tQl-vO-XFn"/>
+                    <constraint firstItem="fvP-R9-X7R" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="zGK-kg-blM"/>
+                </constraints>
+            </tableViewCellContentView>
+            <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <connections>
+                <outlet property="imgCell" destination="dSn-kn-MYX" id="HIg-ZQ-lqu"/>
+            </connections>
+            <point key="canvasLocation" x="121.53846153846153" y="98.104265402843595"/>
+        </tableViewCell>
+    </objects>
+    <resources>
+        <systemColor name="systemPinkColor">
+            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+    </resources>
+</document>
