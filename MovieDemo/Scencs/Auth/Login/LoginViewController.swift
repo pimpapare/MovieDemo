@@ -8,6 +8,11 @@
 import UIKit
 import Material
 
+protocol LoginDelegate {
+
+    func loginSuccess(with user: MD_User)
+}
+
 class LoginViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
@@ -19,6 +24,7 @@ class LoginViewController: UIViewController {
     
     static let identifier = "LoginViewController"
     
+    var delegate: LoginDelegate?
     var authen: [Authen] = [.email, .password, .login]
     var numberOfRow: Int = 0
     
@@ -219,11 +225,14 @@ extension LoginViewController: ButtonDelegate {
         reloadData()
     }
     
-    func loginSuccess() {
+    func loginSuccess(with user: MD_User) {
+        
+        delegate?.loginSuccess(with: user)
         presentHomeView()
     }
     
     func presentHomeView() {
+        
         closeView()
     }
     
@@ -249,6 +258,6 @@ extension LoginViewController: RegisterViewDelegate {
     
     func registerSuccess(with user: MD_User) {
         
-        closeView()
+//        closeView()
     }
 }

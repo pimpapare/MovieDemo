@@ -36,6 +36,10 @@ class MovieListViewController: UIViewController {
         return menuBarItem
     }()
     
+    lazy var user: MD_User? = {
+        return AuthenManager.shared.fetchUser()
+    }()
+    
     var searchController: UISearchController?
     
     static let identifier = "MovieListViewController"
@@ -67,7 +71,7 @@ class MovieListViewController: UIViewController {
         title = "Movies"
         navigationItem.rightBarButtonItem = searchButton
         navigationItem.setHidesBackButton(true, animated: true)
-
+        
         widthVLeft.constant = Constants.Padding.Field
         
         vFooter.layer.borderWidth = 1
@@ -168,10 +172,12 @@ class MovieListViewController: UIViewController {
     }
     
     func presentMovieFavoriteView() {
-       
+        
         let identifier = MovieFavoriteViewController.identifier
         let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieFavoriteViewController
         viewController?.modalPresentationStyle = .fullScreen
+        viewController?.delegate = self
+        viewController?.movieList = viewModel.filterFavoriteMovie(movies: movieList)
         self.navigationController?.pushViewController(viewController!, animated: true)
     }
     
@@ -180,16 +186,24 @@ class MovieListViewController: UIViewController {
         
         viewModel.userLogout()
     }
-
+    
     func presentLogin() {
-     
+        
         let identifier = LoginViewController.identifier
         let viewController = UIStoryboard(name: "Authen", bundle: nil).instantiateViewController(withIdentifier: identifier) as? LoginViewController
         viewController?.modalPresentationStyle = .fullScreen
-
+        viewController?.delegate = self
         let nav = UINavigationController(rootViewController: viewController!)
         nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: true)
+    }
+}
+
+extension MovieListViewController: LoginDelegate {
+
+    func loginSuccess(with user: MD_User) {
+        
+        self.user = user
     }
 }
 
@@ -198,7 +212,7 @@ extension MovieListViewController {
     func fetchAnime(with text: String) {
         
         currentName = text
-        viewModel.fetchAnimeList(with: text)
+        viewModel.fetchAnimeList(of: user?.userId ?? "", with: text)
     }
     
     func fetchAnimeSuccess(with movies: [MD_Movie]?) {
@@ -248,8 +262,22 @@ extension MovieListViewController: UITableViewDelegate {
         let identifier = MovieDetailViewController.identifier
         let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieDetailViewController
         viewController?.movie = movie
+        viewController?.delegate = self
         viewController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(viewController!, animated: true)
+    }
+}
+
+extension MovieListViewController: MovieDetailDelegate, MovieFavoriteDelegate {
+
+    func hasUpdateMovieStatus(with movie: MD_Movie?) {
+        
+        fetchAnime(with: currentName)
+    }
+
+    func needRefreshMovies() {
+        
+        fetchAnime(with: currentName)
     }
 }
 
@@ -282,6 +310,7 @@ extension MovieListViewController: UITableViewDataSource {
         
         let identifier: String = MovieCell.identifier
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? MovieCell
+        cell?.delegate = self
         cell?.prepareCell(with: movie)
         return cell!
     }
@@ -291,5 +320,21 @@ extension MovieListViewController: UITableViewDataSource {
         let identifier: String = NoDataCell.identifier
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier) as? NoDataCell
         return cell!
+    }
+}
+
+extension MovieListViewController: MovieDelegate {
+    
+    func userDidTappedFav(with movie: MD_Movie) {
+        
+        guard let userId = user?.userId else { return }
+        
+        viewModel.setMovieStatus(with: movie, userId: userId)
+    }
+    
+    
+    func updateMovieStatusSuccess(with movie: MD_Movie) {
+        
+        viewModel.fetchLocalAnimeList()
     }
 }

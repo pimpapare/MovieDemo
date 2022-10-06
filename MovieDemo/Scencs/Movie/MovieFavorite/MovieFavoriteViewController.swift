@@ -8,6 +8,11 @@
 import UIKit
 import Material
 
+protocol MovieFavoriteDelegate {
+    
+    func needRefreshMovies()
+}
+
 class MovieFavoriteViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
@@ -18,9 +23,15 @@ class MovieFavoriteViewController: UIViewController {
         
     static let identifier = "MovieFavoriteViewController"
         
+    var delegate: MovieFavoriteDelegate?
     var movieList: [MD_Movie]?
     
+    var hasUpdate: Bool = false
+    var isBack: Bool = false
+    
     override func viewWillAppear(_ animated: Bool) {
+        
+        isBack = true
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -29,18 +40,23 @@ class MovieFavoriteViewController: UIViewController {
         prepareAppreance()
     }
     
+    override func viewDidDisappear(_ animated: Bool) {
+        
+        if hasUpdate, isBack {
+            
+            hasUpdate = false
+            delegate?.needRefreshMovies()
+        }
+    }
+    
     func prepareAppreance() {
         
         prepareView()
-        
-        viewModel.fetchLocalAnimeList()
-        fetchAnime(with: "naruto")
     }
     
     func prepareView() {
         
         title = "Favorite Movies"
-        
         prepareTableView()
     }
     
@@ -80,64 +96,6 @@ class MovieFavoriteViewController: UIViewController {
             self.tableView.reloadData()
         }
     }
-    
-    func presentSearchPopup() {
-        
-        let alert = UIAlertController(title: "Movies name", message: "Please enter movie name", preferredStyle: .alert)
-        alert.addTextField()
-        alert.textFields![0].placeholder = "Movie name"
-        
-        let submitAction = UIAlertAction(title: "Ok", style: .default) { [unowned alert] _ in
-            
-            let textfield = alert.textFields![0]
-            self.fetchAnime(with: textfield.text ?? "")
-        }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [unowned alert] _ in }
-        
-        alert.addAction(submitAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true)
-    }
-    
-    @IBAction func btnFavMovieDidTapped(_ sender: Any) {
-        presentMovieFavoriteView()
-    }
-    
-    func presentMovieFavoriteView() {
-        
-    }
-    
-    @IBAction func btnLogoutDidTapped(_ sender: Any) {
-        
-        viewModel.userLogout()
-    }
-
-    func presentLogin() {
-     
-        let identifier = LoginViewController.identifier
-        let viewController = UIStoryboard(name: "Authen", bundle: nil).instantiateViewController(withIdentifier: identifier) as? LoginViewController
-        viewController?.modalPresentationStyle = .fullScreen
-
-        let nav = UINavigationController(rootViewController: viewController!)
-        nav.modalPresentationStyle = .fullScreen
-        self.present(nav, animated: true)
-    }
-}
-
-extension MovieFavoriteViewController {
-    
-    func fetchAnime(with text: String) {
-        
-        viewModel.fetchAnimeList(with: text)
-    }
-    
-    func fetchAnimeSuccess(with movies: [MD_Movie]?) {
-        
-        movieList = movies
-        reloadData()
-    }
 }
 
 extension MovieFavoriteViewController: UITableViewDelegate {
@@ -150,12 +108,27 @@ extension MovieFavoriteViewController: UITableViewDelegate {
     
     func presentMovieDetail(with movie: MD_Movie?) {
         
+        isBack = false
+        
         let identifier = MovieDetailViewController.identifier
         let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieDetailViewController
         viewController?.movie = movie
-        viewController?.isFromFavorite = true
+        viewController?.delegate = self
         viewController?.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(viewController!, animated: true)
+    }
+}
+
+extension MovieFavoriteViewController: MovieDetailDelegate {
+
+    func hasUpdateMovieStatus(with updatedMovie: MD_Movie?) {
+
+        if let row = movieList?.firstIndex(where: {$0.title == (updatedMovie?.title ?? "")}) {
+            movieList?.remove(at: row)
+        }
+        
+        hasUpdate = true
+        reloadData()
     }
 }
 
@@ -171,6 +144,11 @@ extension MovieFavoriteViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if (movieList?.count ?? 0 == 0) {
+            return 1
+        }
+        
         return movieList?.count ?? 1
     }
     

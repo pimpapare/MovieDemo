@@ -9,6 +9,11 @@ import UIKit
 import Material
 import SafariServices
 
+protocol MovieDetailDelegate {
+    
+    func hasUpdateMovieStatus(with movie: MD_Movie?)
+}
+
 class MovieDetailViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
@@ -24,12 +29,25 @@ class MovieDetailViewController: UIViewController {
         
     static let identifier = "MovieDetailViewController"
     
+    var delegate: MovieDetailDelegate?
+    
     var movie: MD_Movie?
-    var isFromFavorite: Bool = false
+    var hasChange: Bool = false
+    
+    lazy var user: MD_User? = {
+        return AuthenManager.shared.fetchUser()
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         prepareAppearance()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        
+        if hasChange {
+            delegate?.hasUpdateMovieStatus(with: movie)
+        }
     }
     
     func prepareAppearance() {
@@ -48,17 +66,22 @@ class MovieDetailViewController: UIViewController {
         btnOpenWebsite.layer.borderColor = UIColor.green.cgColor
         btnOpenWebsite.layer.cornerRadius = 5
         
-        let color: UIColor = isFromFavorite ? .black : .orange
+        setupBtnFav()
+        prepareTableView()
+    }
+    
+    func setupBtnFav() {
         
-        btnFav.setTitle(isFromFavorite ? "Unfavorite" : "Add Favorite", for: .normal)
+        let isFav: Bool = (movie?.isFav ?? false)
+        let color: UIColor = isFav ? .black : .orange
+        
+        btnFav.setTitle(isFav ? "Unfavorite" : "Add Favorite", for: .normal)
         btnFav.setTitleColor(color, for: .normal)
         btnFav.layer.borderWidth = 1
         btnFav.layer.borderColor = color.cgColor
         btnFav.layer.cornerRadius = 5
         btnFav.setImage(UIImage(named: "star")?.withRenderingMode(.alwaysTemplate), for: .normal)
         btnFav.tintColor = color
-        
-        prepareTableView()
     }
     
     func prepareTableView() {
@@ -97,13 +120,6 @@ class MovieDetailViewController: UIViewController {
         }
     }
     
-    @IBAction func btnFavMovieDidTapped(_ sender: Any) {
-        
-    }
-    
-    @IBAction func btnLogoutDidTapped(_ sender: Any) {
-    }
-    
     @IBAction func btnOpenWebsiteDidTapped(_ sender: Any) {
         
         if let urlPath = movie?.url {
@@ -123,6 +139,30 @@ class MovieDetailViewController: UIViewController {
     }
     
     @IBAction func btnAddToFavDidTapped(_ sender: Any) {
+        
+        guard let selectedMovie = movie else { return }
+        
+        selectedMovie.isFav = !selectedMovie.isFav
+        updateMovieStatus(with: selectedMovie, userId: user?.userId ?? "")
+    }
+    
+    func updateMovieStatus(with movie: MD_Movie, userId: String) {
+
+        viewModel.setMovieStatus(with: movie, userId: userId)
+    }
+    
+    func updateMovieStatusSuccess() {
+        
+        hasChange = true
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            self.closeView()
+        }
+    }
+    
+    func closeView() {
+        
+        self.navigationController?.popViewController(animated: true)
     }
 }
 

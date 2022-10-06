@@ -7,9 +7,10 @@
 
 import UIKit
 import SDWebImage
+
 protocol MovieDelegate {
     
-    func userDidTappedFav()
+    func userDidTappedFav(with movie: MD_Movie)
 }
 
 class MovieCell: UITableViewCell {
@@ -26,6 +27,7 @@ class MovieCell: UITableViewCell {
     static let identifier = "MovieCell"
     
     var delegate: MovieDelegate?
+    var currentMovie: MD_Movie?
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -46,10 +48,13 @@ class MovieCell: UITableViewCell {
     
     func prepareCell(with movie: MD_Movie?) {
         
+        currentMovie = movie
+        
         setTitle(with: movie?.title ?? "")
         setDetail(with: movie?.synopsis ?? "")
         setImage(with: movie?.image ?? "")
-
+        setFavIcon(isFav: movie?.isFav ?? false)
+        
         if let score = movie?.score, score != 0 {
             setScore(with: String(format: "Score %.2f/10", score))
         }
@@ -71,7 +76,22 @@ class MovieCell: UITableViewCell {
         imgCell.sd_setImage(with: URL(string: imagePath), placeholderImage: UIImage(named: "logo"), options: .transformAnimatedImage, completed: nil)
     }
     
+    func setFavIcon(isFav: Bool) {
+        
+        updateBtnFav(isSelected: isFav)
+    }
+    
     @IBAction func btnFavDidTapped(_ sender: Any) {
-        delegate?.userDidTappedFav()
+        
+        guard let value = currentMovie else { return }
+        
+        delegate?.userDidTappedFav(with: value)
+        updateBtnFav(isSelected: value.isFav)
+    }
+    
+    func updateBtnFav(isSelected: Bool) {
+        
+        let imageName = isSelected ? "starlight" : "star"
+        btnFav.setImage(UIImage(named: imageName), for: .normal)
     }
 }

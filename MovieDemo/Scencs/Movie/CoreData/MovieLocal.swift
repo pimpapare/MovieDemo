@@ -28,6 +28,9 @@ extension MovieLocal {
         let fetchRequest: NSFetchRequest<MD_Movie> = NSFetchRequest(entityName: "MD_Movie")
         fetchRequest.returnsObjectsAsFaults = false
         
+        let sorter: NSSortDescriptor = NSSortDescriptor(key: "title" , ascending: true)
+        fetchRequest.sortDescriptors = [sorter]
+        
         var result: [MD_Movie]?
         
         var error: NSError? = nil
@@ -42,6 +45,25 @@ extension MovieLocal {
         return result
     }
     
+    func fetchMovie(from title: String) -> MD_Movie? {
+        
+        let fetchRequest: NSFetchRequest<MD_Movie> = NSFetchRequest(entityName: "MD_Movie")
+        fetchRequest.predicate = NSPredicate(format: "title == %@", title)
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        var result: [MD_Movie]?
+        
+        var error: NSError? = nil
+        
+        do {
+            result = try self.coreDataStore.managedObjectContext.fetch(fetchRequest)
+        } catch let nserror1 as NSError{
+            error = nserror1
+            debugPrint("\(String(describing: error?.description))")
+        }
+        
+        return result?.first
+    }
     
     func saveMovies(from movieList: [Movie]) -> [MD_Movie] {
         
@@ -77,7 +99,9 @@ extension MovieLocal {
             savedMovie?.largeImage = movie.largeImage
             savedMovie?.score = movie.score ?? 0.0
             savedMovie?.url = movie.url
-            
+            savedMovie?.isFav = movie.isFav
+            savedMovie?.documentId = movie.documentId
+
             if let value = savedMovie {
                 savedMovies.append(value)
             }
@@ -85,7 +109,38 @@ extension MovieLocal {
             self.coreDataStore.saveContext(self.coreDataStore.backgroundContext)
         }
         
+        savedMovies = savedMovies.sorted(by: { lItem, rItem in
+            return (lItem.title ?? "") < (rItem.title ?? "")
+        })
+        
         return savedMovies
+    }
+    
+    func saveMovieStatus(of movie: MD_Movie, isFav: Bool, documentId: String?) {
+        
+        let savedMovie: MD_Movie?
+        
+        let fetchRequest: NSFetchRequest<MD_Movie> = NSFetchRequest(entityName: "MD_Movie")
+        fetchRequest.predicate = NSPredicate(format: "title == %@", movie.title ?? "")
+        fetchRequest.returnsObjectsAsFaults = false
+        
+        var result = [MD_Movie]()
+        
+        do {
+            result = try self.coreDataStore.backgroundContext.fetch(fetchRequest)
+        } catch _ {
+        }
+        
+        if result.isEmpty {
+            savedMovie = NSEntityDescription.insertNewObject(forEntityName: "MD_Movie", into: self.coreDataStore.backgroundContext) as? MD_Movie
+        }else{
+            savedMovie = result.first
+        }
+        
+        savedMovie?.isFav = isFav
+        savedMovie?.documentId = documentId
+        
+        self.coreDataStore.saveContext(self.coreDataStore.backgroundContext)
     }
     
     func removeMovies() {

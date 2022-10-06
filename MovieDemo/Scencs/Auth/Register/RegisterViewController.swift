@@ -219,8 +219,7 @@ extension RegisterViewController: ButtonDelegate {
     
     func registerSuccess(user: MD_User) {
         
-        self.dismiss(animated: true) {
-            self.delegate?.registerSuccess(with: user)
-        }
+        delegate?.registerSuccess(with: user)
+        self.navigationController?.popViewController(animated: true)
     }
 }

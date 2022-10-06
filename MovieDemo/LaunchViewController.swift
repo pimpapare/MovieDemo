@@ -9,6 +9,8 @@ import UIKit
 
 class LaunchViewController: UIViewController {
 
+    var movieViewController: MovieListViewController?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -33,7 +35,8 @@ class LaunchViewController: UIViewController {
         let identifier = LoginViewController.identifier
         let viewController = UIStoryboard(name: "Authen", bundle: nil).instantiateViewController(withIdentifier: identifier) as? LoginViewController
         viewController?.modalPresentationStyle = .fullScreen
-
+        viewController?.delegate = self
+        
         let nav = UINavigationController(rootViewController: viewController!)
         nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: true)
@@ -42,9 +45,17 @@ class LaunchViewController: UIViewController {
     func presentHome() {
         
         let identifier = MovieListViewController.identifier
-        let viewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieListViewController
-        viewController?.modalPresentationStyle = .fullScreen
+        movieViewController = UIStoryboard(name: "Movie", bundle: nil).instantiateViewController(withIdentifier: identifier) as? MovieListViewController
+        movieViewController?.modalPresentationStyle = .fullScreen
         
-        navigationController?.pushViewController(viewController!, animated: false)
+        navigationController?.pushViewController(movieViewController!, animated: false)
+    }
+}
+
+extension LaunchViewController: LoginDelegate {
+    
+    func loginSuccess(with user: MD_User) {
+        
+        movieViewController?.user = user
     }
 }

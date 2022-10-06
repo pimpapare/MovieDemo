@@ -18,24 +18,4 @@ class MovieFavoriteViewModel: NSObject {
 
 extension MovieFavoriteViewModel {
     
-    func fetchLocalAnimeList() {
-    
-        let movieList = MovieLocal.shared.fetchMovies()
-        self.viewController.fetchAnimeSuccess(with: movieList)
-    }
-    
-    func fetchAnimeList(with name: String) {
-        
-        MovieManager.shared.fetchAnime(with: name) { success, errorMessage, result in
-            
-            self.viewController.fetchAnimeSuccess(with: result)
-        }
-    }
-    
-    func userLogout() {
-        
-        AuthenManager.shared.userSignout()
-        
-        viewController.presentLogin()
-    }
 }

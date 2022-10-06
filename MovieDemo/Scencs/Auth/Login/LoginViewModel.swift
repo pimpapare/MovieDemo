@@ -30,10 +30,12 @@ extension LoginViewModel {
     
     func userLogin(with email: String, password: String) {
         
-        AuthenManager.shared.userSignin(with: email, password: password) { user, errorMessage in
+        AuthenManager.shared.userSignin(with: email, password: password) { result, errorMessage in
  
-            if let _ = user {
-                self.viewController?.loginSuccess()
+            if let user = result {
+                
+                self.viewController?.loginSuccess(with: user)
+                
             }else {
                 self.viewController.displayAlert(detail: errorMessage ?? "")
             }

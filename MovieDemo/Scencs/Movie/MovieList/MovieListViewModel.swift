@@ -27,6 +27,15 @@ class MovieListViewModel: NSObject {
             viewController.filterMovieSuccess(filterList: filterMovie)
         }
     }
+    
+    func filterFavoriteMovie(movies: [MD_Movie]?) -> [MD_Movie]? {
+        
+        let filterMovie = movies?.filter { movie in
+            return movie.isFav == true
+        }
+        
+        return filterMovie
+    }
 }
 
 extension MovieListViewModel {
@@ -37,9 +46,9 @@ extension MovieListViewModel {
         self.viewController.fetchAnimeSuccess(with: movieList)
     }
     
-    func fetchAnimeList(with name: String) {
+    func fetchAnimeList(of userId: String, with name: String) {
         
-        MovieManager.shared.fetchAnime(with: name) { success, errorMessage, result in
+        MovieManager.shared.fetchAnime(of: userId, with: name) { success, errorMessage, result in
             
             self.viewController.fetchAnimeSuccess(with: result)
         }
@@ -50,5 +59,15 @@ extension MovieListViewModel {
         AuthenManager.shared.userSignout()
         
         viewController.presentLogin()
+    }
+    
+    func setMovieStatus(with movie: MD_Movie, userId: String) {
+                
+        movie.isFav = !movie.isFav
+        
+        MovieManager.shared.updateMovieStatus(with: movie, userId: userId) { success, errorMessage in
+            
+            self.viewController.updateMovieStatusSuccess(with: movie)
+        }
     }
 }

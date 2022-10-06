@@ -15,3 +15,14 @@ class MovieDetailViewModel: NSObject {
         self.viewController = view
     }
 }
+
+extension MovieDetailViewModel {
+    
+    func setMovieStatus(with movie: MD_Movie, userId: String) {
+        
+        MovieManager.shared.updateMovieStatus(with: movie, userId: userId) { success, errorMessage in
+            
+            self.viewController.updateMovieStatusSuccess()
+        }
+    }
+}

@@ -11,6 +11,7 @@ import SwiftyJSON
 public class Movie: NSObject {
     
     var malId: Int16?
+    var documentId: String?
 
     var title: String?
     var synopsis: String?
@@ -27,14 +28,7 @@ public class Movie: NSObject {
     init(json: JSON) {
         
         malId = json["mal_id"].int16Value
-        
-        let titles = json["titles"].arrayValue
-        
-        let titleEn = titles.filter({ titleType in
-            return titleType["type"].stringValue.lowercased() == "english"
-        }).first
-        
-        title = titleEn?["title"].stringValue
+        title = json["title"].stringValue
         
         let images = json["images"].dictionaryValue
         

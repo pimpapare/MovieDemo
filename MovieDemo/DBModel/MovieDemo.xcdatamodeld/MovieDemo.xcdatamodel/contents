@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="19206" systemVersion="21G83" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="MD_Movie" representedClassName="MD_Movie" syncable="YES" codeGenerationType="class">
+        <attribute name="documentId" optional="YES" attributeType="String"/>
         <attribute name="image" optional="YES" attributeType="String"/>
         <attribute name="isFav" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="largeImage" optional="YES" attributeType="String"/>
@@ -16,7 +17,7 @@
         <attribute name="userId" optional="YES" attributeType="String"/>
     </entity>
     <elements>
-        <element name="MD_Movie" positionX="-63" positionY="-18" width="128" height="164"/>
+        <element name="MD_Movie" positionX="-63" positionY="-18" width="128" height="179"/>
         <element name="MD_User" positionX="-54" positionY="36" width="128" height="59"/>
     </elements>
 </model>
