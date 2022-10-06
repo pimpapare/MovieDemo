@@ -40,17 +40,17 @@ class MovieListViewModel: NSObject {
 
 extension MovieListViewModel {
     
-    func fetchLocalAnimeList() {
+    func fetchLocalMovieList() {
     
         let movieList = MovieLocal.shared.fetchMovies()
-        self.viewController.fetchAnimeSuccess(with: movieList)
+        self.viewController.fetchMovieSuccess(with: movieList)
     }
     
-    func fetchAnimeList(of userId: String, with name: String) {
+    func fetchMovieList(of userId: String, with name: String) {
         
-        MovieManager.shared.fetchAnime(of: userId, with: name) { success, errorMessage, result in
+        MovieManager.shared.fetchMovie(of: userId, with: name) { success, errorMessage, result in
             
-            self.viewController.fetchAnimeSuccess(with: result)
+            self.viewController.fetchMovieSuccess(with: result)
         }
     }
     

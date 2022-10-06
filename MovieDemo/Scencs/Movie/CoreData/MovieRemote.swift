@@ -25,9 +25,9 @@ public class MovieRemote {
         ref = Database.database().reference()
     }
     
-    func fetchAnime(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [Movie]?)-> Void) {
+    func fetchMovie(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [Movie]?)-> Void) {
         
-        MovieService.getAnime(with: name) { success, errorMessage, result in
+        MovieService.getMovie(with: name) { success, errorMessage, result in
             
             completion(success, errorMessage, result)
         }

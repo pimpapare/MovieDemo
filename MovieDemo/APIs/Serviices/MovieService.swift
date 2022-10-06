@@ -11,9 +11,9 @@ import SwiftyJSON
 
 public class MovieService {
     
-    public static func getAnime(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [Movie]?)-> Void) {
+    public static func getMovie(with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [Movie]?)-> Void) {
         
-        let request = MovieRouter.getAnime(name: name)
+        let request = MovieRouter.getMovie(name: name)
         
         APIRequest.request(withRouter: request) { response, error in
             

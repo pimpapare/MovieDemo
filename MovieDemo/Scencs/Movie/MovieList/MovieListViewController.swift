@@ -63,8 +63,8 @@ class MovieListViewController: UIViewController {
         
         prepareView()
         
-        viewModel.fetchLocalAnimeList()
-        fetchAnime(with: "naruto")
+        viewModel.fetchLocalMovieList()
+        fetchMovie(with: "naruto")
     }
     
     func prepareView() {
@@ -157,7 +157,7 @@ class MovieListViewController: UIViewController {
         let submitAction = UIAlertAction(title: "Ok", style: .default) { [unowned alert] _ in
             
             let textfield = alert.textFields![0]
-            self.fetchAnime(with: textfield.text ?? "")
+            self.fetchMovie(with: textfield.text ?? "")
         }
         
         let cancelAction = UIAlertAction(title: "Cancel", style: .cancel) { [unowned alert] _ in }
@@ -210,15 +210,15 @@ extension MovieListViewController: LoginDelegate {
 
 extension MovieListViewController {
     
-    func fetchAnime(with text: String) {
+    func fetchMovie(with text: String) {
         
         currentName = text
         
         LoadIndicator.showDefaultLoading()
-        viewModel.fetchAnimeList(of: user?.userId ?? "", with: text)
+        viewModel.fetchMovieList(of: user?.userId ?? "", with: text)
     }
     
-    func fetchAnimeSuccess(with movies: [MD_Movie]?) {
+    func fetchMovieSuccess(with movies: [MD_Movie]?) {
         
         movieList = movies
         filterMovieList = movieList
@@ -288,12 +288,12 @@ extension MovieListViewController: MovieDetailDelegate, MovieFavoriteDelegate {
             searchController?.isActive = false
         }
         
-        fetchAnime(with: currentName)
+        fetchMovie(with: currentName)
     }
 
     func needRefreshMovies() {
         
-        fetchAnime(with: currentName)
+        fetchMovie(with: currentName)
     }
 }
 
@@ -352,7 +352,7 @@ extension MovieListViewController: MovieDelegate {
     
     func updateMovieStatusSuccess(with movie: MD_Movie) {
         
-        viewModel.fetchLocalAnimeList()
+        viewModel.fetchLocalMovieList()
         LoadIndicator.dismissLoading()
     }
 }

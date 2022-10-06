@@ -9,7 +9,7 @@ import Alamofire
 
 enum MovieRouter: AlamofireRouterProtocol {
     
-    case getAnime(name: String)
+    case getMovie(name: String)
 }
 
 extension MovieRouter {
@@ -17,7 +17,7 @@ extension MovieRouter {
     var path: String {
         
         switch self {
-        case .getAnime:
+        case .getMovie:
             return "anime"
         }
     }
@@ -37,7 +37,7 @@ extension MovieRouter {
     var parameters: [String: Any]? {
         
         switch self {
-        case .getAnime(let name):
+        case .getMovie(let name):
             
             let params: [String: Any] = ["q": name]
             return params

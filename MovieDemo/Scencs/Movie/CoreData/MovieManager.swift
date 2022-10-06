@@ -15,13 +15,13 @@ class MovieManager: NSObject {
 
 extension MovieManager {
     
-    func fetchAnime(of userId: String, with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [MD_Movie]?)-> Void) {
+    func fetchMovie(of userId: String, with name: String, completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [MD_Movie]?)-> Void) {
         
-        MovieRemote.shared.fetchAnime(with: name) { success, errorMessage, result in
+        MovieRemote.shared.fetchMovie(with: name) { success, errorMessage, result in
             
             if let value = result {
                 
-                self.fetchAnimeFavorite(of: userId, allAnieme: value) { success, errorMessage, response in
+                self.fetchMovieFavorite(of: userId, allAnieme: value) { success, errorMessage, response in
                     
                     completion(success, errorMessage, response)
                 }
@@ -33,7 +33,7 @@ extension MovieManager {
         }
     }
     
-    func fetchAnimeFavorite(of userId: String, allAnieme: [Movie],
+    func fetchMovieFavorite(of userId: String, allAnieme: [Movie],
                             completion: @escaping (_ success: Bool, _ errorMessage: String?, _ result: [MD_Movie]?)-> Void) {
         
         guard userId.count > 0 else {
