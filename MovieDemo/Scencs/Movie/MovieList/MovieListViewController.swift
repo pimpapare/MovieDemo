@@ -45,12 +45,14 @@ class MovieListViewController: UIViewController {
     static let identifier = "MovieListViewController"
     
     var currentName: String = ""
-    var isSearchActive: Bool = false
+    var searchText: String?
     
     var movieList: [MD_Movie]?
     var filterMovieList: [MD_Movie]?
     
     override func viewWillAppear(_ animated: Bool) {
+        
+        user = AuthenManager.shared.fetchUser()
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
     
@@ -222,8 +224,12 @@ extension MovieListViewController {
         
         movieList = movies
         filterMovieList = movieList
-        
-        reloadData()
+                
+        if let text = searchText, text.count > 0 {
+            viewModel.filterMovie(with: text, movies: movieList)
+        }else {
+            reloadData()
+        }
         
         LoadIndicator.dismissLoading()
     }
@@ -233,13 +239,13 @@ extension MovieListViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
-        isSearchActive = true
+        self.searchText = searchText
         filterMovie(with: searchText)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
-        isSearchActive = false
+        self.searchText = nil
         filterMovieList = movieList
         reloadData()
     }
@@ -260,6 +266,8 @@ extension MovieListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        guard indexPath.row < (filterMovieList?.count ?? 0) else { return }
+
         let movie = filterMovieList?[indexPath.row]
         presentMovieDetail(with: movie)
     }
@@ -278,15 +286,6 @@ extension MovieListViewController: UITableViewDelegate {
 extension MovieListViewController: MovieDetailDelegate, MovieFavoriteDelegate {
 
     func hasUpdateMovieStatus(with movie: MD_Movie?) {
-        
-        if isSearchActive {
-            
-            isSearchActive = false
-            filterMovieList = movieList
-            reloadData()
-            
-            searchController?.isActive = false
-        }
         
         fetchMovie(with: currentName)
     }
@@ -309,6 +308,11 @@ extension MovieListViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        if (filterMovieList?.count ?? 0) == 0 {
+            return 1
+        }
+        
         return filterMovieList?.count ?? 1
     }
     

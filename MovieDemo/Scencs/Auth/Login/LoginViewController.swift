@@ -233,11 +233,6 @@ extension LoginViewController: ButtonDelegate {
     func loginSuccess(with user: MD_User) {
         
         delegate?.loginSuccess(with: user)
-        presentHomeView()
-    }
-    
-    func presentHomeView() {
-        
         closeView()
     }
     

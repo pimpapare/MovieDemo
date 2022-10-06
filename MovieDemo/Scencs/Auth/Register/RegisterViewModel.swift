@@ -30,6 +30,7 @@ extension RegisterViewModel {
             return
         }
         
+        viewController.reloadData()
         register(with: email, password: password)
     }
     

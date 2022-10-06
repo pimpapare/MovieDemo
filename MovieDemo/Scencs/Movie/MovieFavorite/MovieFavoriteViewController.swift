@@ -102,6 +102,8 @@ extension MovieFavoriteViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        guard indexPath.row < (movieList?.count ?? 0) else { return }
+
         let movie = movieList?[indexPath.row]
         presentMovieDetail(with: movie)
     }
