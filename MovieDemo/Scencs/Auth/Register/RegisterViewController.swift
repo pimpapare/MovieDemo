@@ -199,6 +199,11 @@ extension RegisterViewController: ButtonDelegate {
         viewModel.verifyForm(with: user)
     }
     
+    func setLoading() {
+    
+        LoadIndicator.showDefaultLoading()
+    }
+    
     func verifyFormFailed() {
         
         isNeedVerify = true
@@ -207,6 +212,8 @@ extension RegisterViewController: ButtonDelegate {
     
     func displayAlert(title: String?=nil, detail: String?=nil) {
         
+        LoadIndicator.dismissLoading()
+
         let alertController = UIAlertController(title: title, message: detail, preferredStyle: .alert)
 
         let okeyAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -219,6 +226,8 @@ extension RegisterViewController: ButtonDelegate {
     
     func registerSuccess(user: MD_User) {
         
+        LoadIndicator.dismissLoading()
+
         delegate?.registerSuccess(with: user)
         self.navigationController?.popViewController(animated: true)
     }

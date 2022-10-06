@@ -25,10 +25,13 @@ extension LoginViewModel {
             return
         }
         
+        viewController.reloadData()
         userLogin(with: email, password: password)
     }
     
     func userLogin(with email: String, password: String) {
+        
+        self.viewController?.setLoading()
         
         AuthenManager.shared.userSignin(with: email, password: password) { result, errorMessage in
  

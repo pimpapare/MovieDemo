@@ -353,6 +353,7 @@ PODS:
   - SDWebImage (5.13.4):
     - SDWebImage/Core (= 5.13.4)
   - SDWebImage/Core (5.13.4)
+  - SVProgressHUD (2.2.5)
   - SwiftyJSON (5.0.1)
 
 DEPENDENCIES:
@@ -368,6 +369,7 @@ DEPENDENCIES:
   - IQKeyboardManagerSwift
   - Material
   - SDWebImage
+  - SVProgressHUD
   - SwiftyJSON
 
 SPEC REPOS:
@@ -400,6 +402,7 @@ SPEC REPOS:
     - ObjectMapper
     - PromisesObjC
     - SDWebImage
+    - SVProgressHUD
     - SwiftyJSON
 
 SPEC CHECKSUMS:
@@ -431,8 +434,9 @@ SPEC CHECKSUMS:
   ObjectMapper: 97111c97e054a6ee25917662106689f0b4127b37
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   SDWebImage: e5cc87bf736e60f49592f307bdf9e157189298a3
+  SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   SwiftyJSON: 2f33a42c6fbc52764d96f13368585094bfd8aa5e
 
-PODFILE CHECKSUM: 01524da1d664b9193c782d9e8de2b3e5590f34ae
+PODFILE CHECKSUM: 6da62bf08d702e338d77a2d030044ae172381aa6
 
 COCOAPODS: 1.11.3

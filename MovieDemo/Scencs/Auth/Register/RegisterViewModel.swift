@@ -35,6 +35,8 @@ extension RegisterViewModel {
     
     func register(with email: String, password: String) {
         
+        self.viewController.setLoading()
+        
         AuthenManager.shared.userRegister(with: email, password: password) { result, errorMessage in
             
             if let value = result {

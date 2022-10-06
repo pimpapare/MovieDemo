@@ -148,13 +148,15 @@ class MovieDetailViewController: UIViewController {
     
     func updateMovieStatus(with movie: MD_Movie, userId: String) {
 
+        LoadIndicator.showDefaultLoading()
         viewModel.setMovieStatus(with: movie, userId: userId)
     }
     
     func updateMovieStatusSuccess() {
         
         hasChange = true
-        
+        LoadIndicator.dismissLoading()
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             self.closeView()
         }

@@ -45,6 +45,7 @@ class MovieListViewController: UIViewController {
     static let identifier = "MovieListViewController"
     
     var currentName: String = ""
+    var isSearchActive: Bool = false
     
     var movieList: [MD_Movie]?
     var filterMovieList: [MD_Movie]?
@@ -212,6 +213,8 @@ extension MovieListViewController {
     func fetchAnime(with text: String) {
         
         currentName = text
+        
+        LoadIndicator.showDefaultLoading()
         viewModel.fetchAnimeList(of: user?.userId ?? "", with: text)
     }
     
@@ -221,6 +224,8 @@ extension MovieListViewController {
         filterMovieList = movieList
         
         reloadData()
+        
+        LoadIndicator.dismissLoading()
     }
 }
 
@@ -228,11 +233,13 @@ extension MovieListViewController: UISearchBarDelegate {
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
+        isSearchActive = true
         filterMovie(with: searchText)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
         
+        isSearchActive = false
         filterMovieList = movieList
         reloadData()
     }
@@ -271,6 +278,15 @@ extension MovieListViewController: UITableViewDelegate {
 extension MovieListViewController: MovieDetailDelegate, MovieFavoriteDelegate {
 
     func hasUpdateMovieStatus(with movie: MD_Movie?) {
+        
+        if isSearchActive {
+            
+            isSearchActive = false
+            filterMovieList = movieList
+            reloadData()
+            
+            searchController?.isActive = false
+        }
         
         fetchAnime(with: currentName)
     }
@@ -329,6 +345,7 @@ extension MovieListViewController: MovieDelegate {
         
         guard let userId = user?.userId else { return }
         
+        LoadIndicator.showDefaultLoading()
         viewModel.setMovieStatus(with: movie, userId: userId)
     }
     
@@ -336,5 +353,6 @@ extension MovieListViewController: MovieDelegate {
     func updateMovieStatusSuccess(with movie: MD_Movie) {
         
         viewModel.fetchLocalAnimeList()
+        LoadIndicator.dismissLoading()
     }
 }

@@ -23,6 +23,8 @@ target 'MovieDemo' do
   pod 'AlamofireNetworkActivityLogger'
   pod 'Alamofire'
   
+  pod 'SVProgressHUD'
+  
   pod 'IQKeyboardManagerSwift'
 
   target 'MovieDemoTests' do

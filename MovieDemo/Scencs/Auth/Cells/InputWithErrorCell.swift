@@ -74,13 +74,15 @@ class InputWithErrorCell: UITableViewCell {
         }
     }
     
-    func setErrorText(with text: String) {
+    func setErrorText(with text: String?) {
         
         txError.text = text
     }
     
     func verifyCell(with type: Authen, user: User) {
         
+        setErrorText(with: nil)
+
         switch type {
         case .email:
             

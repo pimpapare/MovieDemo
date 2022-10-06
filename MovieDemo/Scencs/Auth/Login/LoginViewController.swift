@@ -210,6 +210,11 @@ extension LoginViewController: ButtonDelegate {
         viewModel.verifyForm(with: user)
     }
     
+    func setLoading() {
+        
+        LoadIndicator.showDefaultLoading()
+    }
+    
     func presentRegisterView() {
         
         let identifier = RegisterViewController.identifier
@@ -238,6 +243,8 @@ extension LoginViewController: ButtonDelegate {
     
     func displayAlert(title: String?=nil, detail: String?=nil) {
         
+        LoadIndicator.dismissLoading()
+
         let alertController = UIAlertController(title: title, message: detail, preferredStyle: .alert)
         
         let okeyAction = UIAlertAction(title: "OK", style: .default, handler: nil)
@@ -250,6 +257,7 @@ extension LoginViewController: ButtonDelegate {
     
     func closeView() {
         
+        LoadIndicator.dismissLoading()
         self.dismiss(animated: true)
     }
 }
