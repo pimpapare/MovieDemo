@@ -21,7 +21,8 @@ extension AuthenManager {
         return AuthenLocal.shared.fetchUser()
     }
     
-    func userRegister(with email: String, password: String, completion: @escaping (_ user: MD_User?, _ errorMessage: String?)-> Void) {
+    func userRegister(with email: String, password: String,
+                      completion: @escaping (_ user: MD_User?, _ errorMessage: String?)-> Void) {
         
         AuthenRemote.shared.userRegister(with: email, password: password) { result, errorMessage in
             
@@ -37,7 +38,8 @@ extension AuthenManager {
         }
     }
     
-    func userSignin(with email: String, password: String, completion: @escaping (_ user: MD_User?, _ errorMessage: String?)-> Void) {
+    func userSignin(with email: String, password: String,
+                    completion: @escaping (_ user: MD_User?, _ errorMessage: String?)-> Void) {
         
         AuthenRemote.shared.userSignin(with: email, password: password) { result, errorMessage in
             

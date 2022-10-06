@@ -118,6 +118,7 @@ class MovieListViewController: UIViewController {
         
         searchController = UISearchController(searchResultsController: nil)
         searchController?.dimsBackgroundDuringPresentation = false
+
         searchController?.searchBar.placeholder = "Search"
         searchController?.searchBar.delegate = self
         searchController?.searchBar.sizeToFit()

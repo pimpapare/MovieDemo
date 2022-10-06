@@ -40,7 +40,8 @@ class MovieCell: UITableViewCell {
         
         imgCell.layer.cornerRadius = 10
         imgCell.clipsToBounds = true
-        
+        imgCell.contentMode = .scaleAspectFill
+
         setTitle(with: nil)
         setDetail(with: nil)
         setScore(with: nil)
